@@ -118,27 +118,15 @@ public class Calendar {
 		ArrayList<Meeting> thatDay = occupied.get(mMonth).get(mDay);
 		boolean booked = false;
 		Meeting conflict = new Meeting();
-		
-		for(Meeting toCheck : thatDay){
-			if(!toCheck.getDescription().equals("Day does not exist")){
-				// Does the start time fall between this meeting's start and end times?
-				if(mStart >= toCheck.getStartTime() && mStart <= toCheck.getEndTime()){
-					booked = true;
-					conflict = toCheck;
-					// Does the end time fall between this meeting's start and end times?
-				}else if(mEnd >= toCheck.getStartTime() && mEnd <= toCheck.getEndTime()){
-					booked = true;
-					conflict = toCheck;
-				}
-			}
-		}
-		
-		if(booked){
-			throw new TimeConflictException("Overlap with another item - "+conflict.getDescription()
-				+" - scheduled from "+conflict.getStartTime()+" and "+conflict.getEndTime());
-		}else{
-			occupied.get(mMonth).get(mDay).add(toAdd);
-		}
+
+        for (Meeting toCheck : thatDay) {
+            if (!"Day does not exist".equals(toCheck.getDescription()) && toAdd.overlaps(toCheck)) {
+                throw new TimeConflictException("Overlap with another item - "
+                        + toCheck.getDescription() + " - scheduled from "
+                        + toCheck.getStartTime() + " and " + toCheck.getEndTime());
+            }
+        }
+        occupied.get(mMonth).get(mDay).add(toAdd);
 	}
 	
 	/**

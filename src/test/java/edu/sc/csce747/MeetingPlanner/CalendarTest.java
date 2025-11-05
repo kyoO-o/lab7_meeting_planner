@@ -73,4 +73,22 @@ public class CalendarTest {
         String result = cal.printAgenda(3, 10);
         assertTrue(result.contains("Review"));
     }
+    @Test
+    public void testIsBusy_MeetingEndsBeforeRange_ReturnsFalse() throws TimeConflictException {
+        Calendar cal = new Calendar();
+        Meeting m = new Meeting(3, 10, 8, 9, new ArrayList<>(), new Room("A101"), "Morning");
+        cal.addMeeting(m);
+        // Range is after the meeting
+        assertFalse(cal.isBusy(3, 10, 10, 11));
+    }
+
+    @Test
+    public void testIsBusy_MeetingStartsAfterRange_ReturnsFalse() throws TimeConflictException {
+        Calendar cal = new Calendar();
+        Meeting m = new Meeting(3, 10, 14, 15, new ArrayList<>(), new Room("A101"), "Afternoon");
+        cal.addMeeting(m);
+        // Range is before the meeting
+        assertFalse(cal.isBusy(3, 10, 10, 11));
+    }
+
 }
